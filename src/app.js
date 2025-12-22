@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended:true,limit:"20kb"}));
 
 app.use(express.static("public"));
 
-app.use(cookieParser())
+app.use(cookieParser())        //ye  from line 7 to 18 ekbar dekhlena kya he
 
 
 export{app}

@@ -8,6 +8,9 @@ const result=dotenv.config({ path: "D:/YTBackend/.env" });  //.env didnt work so
  console.log("URI =", process.env.MONGODB_URI); we did this to check if contents of .env are being loaded */
 
 
+
+
+ 
 // import mongoose  from "mongoose";
 // import { DB_NAME } from "./constants";  we did this in aour seperate bd/index.js file
 import connectDB from "./db/index.js" 
