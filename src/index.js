@@ -12,10 +12,10 @@ const result=dotenv.config({ path: "D:/YTBackend/.env" });  //.env didnt work so
 
  
 // import mongoose  from "mongoose";
-// import { DB_NAME } from "./constants";  we did this in aour seperate bd/index.js file
+// import { DB_NAME } from "./constants";  we did this in aour seperate db/index.js file
 import connectDB from "./db/index.js" 
 
-
+import {app} from "./app.js"
 
 
 
