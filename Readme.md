@@ -37,15 +37,15 @@ Note: we have to make .gitignore ourselves
 
 3) # install nodemon 
 
-4) connect database:
+4) # connect database:
      for that make a connectDB function in db/index.js  ... do this using mongoose 
      connect databse in src/index.js 
 
-5) make app using express in app.js
+5) # make app using express in app.js
 
-6) make async_handler, ApiResponse, ApiError   in utils folder  so that we can reuse them
+6) # make async_handler, ApiResponse, ApiError   in utils folder  so that we can reuse them
 
-7) then we are ready to make our models 
+7) # then we are ready to make our models 
 
 bcrypt helps you to hash passwords
 jwt helps in tokens
