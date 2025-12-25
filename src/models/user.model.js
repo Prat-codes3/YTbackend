@@ -4,7 +4,7 @@ dotenv.config({ path: "D:/YTBackend/.env" });
 import mongoose,{Schema} from "mongoose"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-console.log(process.env.ACCESS_TOKEN_SECRET)
+
 const userSchema = new Schema({
     username:{
         type:String,
