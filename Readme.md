@@ -22,7 +22,7 @@ License, author info, etc.
 Initializes your folder as an npm-managed project
 After this, npm will track dependencies and scripts inside that directory.
 
-2)After npm init, when you install something like:
+2) After npm init, when you install something like:
 # npm install express
 
 Then:
@@ -49,3 +49,5 @@ Note: we have to make .gitignore ourselves
 
 bcrypt helps you to hash passwords
 jwt helps in tokens
+
+8) # Upload files using multer and cloudinary
