@@ -51,3 +51,9 @@ bcrypt helps you to hash passwords
 jwt helps in tokens
 
 8) # Upload files using multer and cloudinary
+
+
+9) # learned how to regester a user 
+     made user.controllers.js 
+     made  route.routers.js
+     then used this in app using app.use(" ",userRouter)
