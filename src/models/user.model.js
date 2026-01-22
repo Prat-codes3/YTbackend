@@ -31,7 +31,7 @@ const userSchema = new Schema({
         type:String, //cloudinary url we will be using for ex
         required: true 
     },
-    coberImage:{
+    coverImage:{
         type: String, //cloudinary url
     },
     watchHistory:[ {    //watchhisory is array of objects
@@ -84,4 +84,5 @@ userSchema.methods.generateRefreshToken=function(){return jwt.sign({
         //payload
         id:this._id ,//ye hme mongodB se milegi
     },process.env.REFRESH_TOKEN_SECRET,{expiresIn:process.env.REFRESH_TOKEN_EXPIRY})}
-export const User = mongoose.model("User",userSchema)
+
+    export const User = mongoose.model("User",userSchema)
