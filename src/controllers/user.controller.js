@@ -15,8 +15,9 @@ const registerUser= asyncHandler(async (req,res)=>{
     //remove password and refresh token field from response
     //check for user creation
     //if created return response
+  
     const {fullname,email,username,password}=req.body    //attributes shd be same as in our user model
-    console.log("email : ",email)
+    console.log("email: ",email)
      //note: Form ya json se data aa rha he to .body me mil jyega
 
      if(fullname===""){       //check if fullname is not null
@@ -28,13 +29,14 @@ const registerUser= asyncHandler(async (req,res)=>{
      }
       
      //check if user already exists
-     const existingUser=User.findOne({$or: [{username} , {email}]})
+     const existingUser=await User.findOne({$or: [{username} , {email}]})
      if(existingUser){throw new ApiError(409,"User already exists")}
 
 
     //check if avatar and files are uploaded
      const avatarLocalPath=req.files?.avatar[0]?.path
      const coverImageLocalPath=req.files?.coverImage[0]?.path
+     
 
      if(!avatarLocalPath){throw new ApiError(400,"Avatar to lgega bhai")}
 

@@ -17,6 +17,8 @@ const uploadOnCloudinary= async(localeFilePath)=>{
        const response=await cloudinary.uploader.upload(localeFilePath,{resource_type:"auto"})
         //file has been uploaded successsfulyy
         console.log("file is uploaded on cloudinary",response.url);
+
+        fs.unlinkSync(localeFilePath); //testing krli ab files server se htado beta
         return response;
     } catch (error) {
         fs.unlinkSync(localeFilePath) //removes the locallly saved temperory file as the upload opeartion got failed

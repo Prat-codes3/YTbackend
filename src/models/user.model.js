@@ -49,11 +49,11 @@ const userSchema = new Schema({
 },{timestamps:true});
 
 
-userSchema.pre("save",async function(next){
-    if(!this.isModified("password")){return next();}
+userSchema.pre("save",async function(){
+    if(!this.isModified("password")){return ;}
 
     this.password= await bcrypt.hash(this.password,10)
-    next()
+    
 
     //hame password ko encrypt krna tha before saving isliye hamne ".pre()"hook use kara
     //pre ke andar hamne "save"  diya to tell pre ki save krne se pehe ye wala kam krna he
