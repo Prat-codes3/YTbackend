@@ -73,7 +73,7 @@ userSchema.methods.isPasswordCorrect=async function(password){
 userSchema.methods.generateAccessToken= function(){
     return jwt.sign({
         //payload
-        id:this._id ,//ye hme mongodB se milegi
+        _id:this._id ,//ye hme mongodB se milegi
         email:this.email,
         username: this.username,
         fullname: this.fullname
@@ -82,7 +82,7 @@ userSchema.methods.generateAccessToken= function(){
 
 userSchema.methods.generateRefreshToken=function(){return jwt.sign({
         //payload
-        id:this._id ,//ye hme mongodB se milegi
+        _id:this._id ,//ye hme mongodB se milegi
     },process.env.REFRESH_TOKEN_SECRET,{expiresIn:process.env.REFRESH_TOKEN_EXPIRY})}
 
 
