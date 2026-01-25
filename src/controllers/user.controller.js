@@ -186,5 +186,85 @@ const logoutUser=asyncHandler(async(req,res)=>{
     }
   })
 
+  const changePassword= asyncHandler (async(req,res)=>{
+    //get user id from req.user
+    //get old password and new password from req.body
+    //find user from db
+    //compare old password
+    //if matches then update with new password
+    //save user
+    //return response
+    const userId= req.user._id
+    const {oldPassword,newPassword}= req.body
+    const user= await User.findById(userId)
+    if(!user){
+      throw new ApiError (404,"user not found")
+    }
+    const isOldPasswordValid= await user.isPasswordCorrect(oldPassword)
+    if(!isOldPasswordValid){
+      throw new ApiError (401,"old password is incorrect")
+    }
+    user.password=newPassword
+    await user.save({validateBeforeSave:false})
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken}
+    return res.status(200).json (new Apiresponse(200,{},"password changed successfully"))
+
+  })
+
+  const getCurrentUser= asyncHandler (async (req,res)=>{
+    const userId= req.user._id
+    const user= await User.findById (userId).select ("-password -refreshToken") 
+    if(!user){
+      throw new ApiError (404,"user not found")
+    }
+    return res.status(200).json (new Apiresponse (200,user,"current user fetched successfully"))
+  })
+
+  const updateUserProfile= asyncHandler (async (req,res)=>{
+    //get user id from req.user
+    //get updated fields from req.body
+    //find user from db
+    //update fields
+    //if avatar or cover image is there then upload to cloudinary
+    //save user
+    //return response
+    
+    const userId= req.user._id
+    const {fullname,email}= req.body
+        //check if avatar and cover image are there in req.files
+    const avatarLocalPath= req.files?.avatar[0]?.path
+    const coverImageLocalPath= req.files?.coverImage[0]?.path
+
+ if (!fullname && !email && !avatarLocalPath && !coverImageLocalPath) {
+  throw new ApiError(400, "At least one field is required");
+}
+
+    const user= await User.findById (userId)
+    if(!user){
+      throw new ApiError (404,"user not found")
+    }
+  if (fullname) user.fullname = fullname;
+  if (email) user.email = email;     
+
+
+  if(avatarLocalPath){
+      const avatar= await uploadOnCloudinary (avatarLocalPath)
+      if(!avatar){
+        throw new ApiError (500,"something went wrong while uploading avatar")
+      }
+      user.avatar= avatar.url
+    }
+  if(coverImageLocalPath){
+      const coverImage= await uploadOnCloudinary (coverImageLocalPath)
+      if(!coverImage){
+        throw new ApiError (500,"something went wrong while uploading cover image")
+      }
+      user.coverImage= coverImage.url
+    }
+    await user.save ({validateBeforeSave:false})
+    const updatedUser= await User.findById (userId).select ("-password -refreshToken")
+    
+    return res.status (200).json (new Apiresponse (200,updatedUser,"user profile updated successfully"))
+  })
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken, changePassword, getCurrentUser, updateUserProfile}
