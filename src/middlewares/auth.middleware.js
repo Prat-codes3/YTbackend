@@ -5,8 +5,7 @@ import jwt from "jsonwebtoken"
 import {User} from "../models/user.model.js"
 import dotenv from "dotenv"
 
-
-export const verifyJWT=asyncHandler(async(req,res,next)=>{
+const verifyJWT=asyncHandler(async(req,res,next)=>{
     try {
         const token=req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ","")           //hmare pass req me cookies ka access he cuz hmne hi app.use(cookieparser()) kra tha
         
@@ -28,3 +27,20 @@ export const verifyJWT=asyncHandler(async(req,res,next)=>{
         throw new ApiError(401,error?.message || "Invalid Access Token")
     }
 })
+
+const optionalVerifyJWT = async (req, res, next) => {
+  try {
+    const token =
+      req.cookies?.accessToken ||
+      req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) return next();
+
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    next();
+  }
+};
+export {verifyJWT, optionalVerifyJWT}

@@ -267,4 +267,65 @@ const logoutUser=asyncHandler(async(req,res)=>{
     return res.status (200).json (new Apiresponse (200,updatedUser,"user profile updated successfully"))
   })
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken, changePassword, getCurrentUser, updateUserProfile}
+  const getUserChannelProfile= asyncHandler (async (req,res)=>{
+    const {username}= req.params //username from url
+    if(!username?.trim()){
+      throw new ApiError (400,"username is missing")
+    }
+    const channel= await User.aggregate([
+      {
+      $match: {username: username.toLowerCase()}
+      },
+     {
+    $lookup: {
+      from: "subscriptions",  //collection name in db
+      localField: "_id",
+      foreignField: "channel",
+      as: "subscribers"
+      }
+    },
+    {
+        $lookup:{
+          from:"subscriptions",
+          localField:"_id",  
+          foreignField:"subscriber",
+          as:"subscribedTo"
+        } 
+      },
+      {
+        $addFields:{
+          subscribersCount: {$size: "$subscribers"},
+          subscribedToCount: {$size: "$subscribedTo"},
+          isSubscribed: {
+            $cond: {
+              if:{$in:[req.user?._id , "$subscribers.subscriber"]}, //check if logged in user id is present in the array of subscribers of this channel
+              then:true,
+              else:false
+            }
+          }  //req.user?._id -> logged in user id , "$subscribers.subscriber" -> array of subscribers ke id jo is channel ko subscribe krte he
+        }
+      },{
+        $project:{
+          fullname:1,
+          username:1,
+          email:1,
+          avatar:1,
+          coverImage:1,
+          subscribersCount:1,
+          subscribedToCount:1,
+          isSubscribed:1
+        }
+      }
+      
+    ])
+
+    if(!channel || channel.length===0){
+      throw new ApiError (404,"channel not found")
+    }
+
+    return res.status (200).json (new Apiresponse (200,channel[0],"channel profile fetched successfully"))  
+  })
+    
+
+
+export {registerUser,loginUser,logoutUser,refreshAccessToken, changePassword, getCurrentUser, updateUserProfile,getUserChannelProfile}
