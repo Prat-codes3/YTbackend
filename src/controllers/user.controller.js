@@ -4,6 +4,7 @@ import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { Apiresponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose"
 
 const generateAccessAndRefreshToken=async(userId)=>{
   try {
@@ -326,6 +327,55 @@ const logoutUser=asyncHandler(async(req,res)=>{
     return res.status (200).json (new Apiresponse (200,channel[0],"channel profile fetched successfully"))  
   })
     
+const getWatchHistory= asyncHandler(async(req,res)=>{
+   
+  const user= await User.aggregate([
+    {
+      $match: { _id: new mongoose.Types.ObjectId(req.user._id) }  //Note: req.user._id is a string, so we convert it to ObjectId cuz _id in mongodb is of type ObjectId
+    },
+    {
+      $lookup:{
+        from:"videos",  //collection name in db , we set this as our model name in video.model.js ans "s" is added automatically by mongoose cuz plural form me collection bnti he
+        localField:"watchHistory",
+        foreignField:"_id",
+        as:"watchHistory",
+        pipeline:[  //to populate owner field inside each video object in watchHistory array
+                    //ye pipeline har ek video object pe chalega jo watchHistory me he
+                    //and usme se owner field ko populate krdega
+                    //yehi kaam krta he populate function
+                    //but populate function aggregate me nhi chlta isliye hmne pipeline use kra he
+                    //ab har ek video object ke andar owner field me user ki id ki jagah pura user object aa jyega
+          {
+            $lookup:{
+              from: "users",
+              localField:"owner",
+              foreignField:"_id",
+              as:"owner",
+              pipeline:[
+                {
+                  $project:{
+                  fullname:1,
+                  username:1,
+                  avatar:1
+                }
+              }
+              ]
+            }
+          },
+          {
+            $addFields:{
+              owner:{
+                $first:"$owner"  //ab frontend me owner ek array me aa rha he isliye use object me convert krne ke liye $first use kra he , $first sbse pehla element de deta he array ka, yani ki pura owner object , cuz owner array me ek hi object he,cuz ek video ka ek hi owner he,cuz humne upar lookup me bhi aise hi set kra he,cuz owner field me ek hi id he 
+              }
+            } 
+          }
+        ]
+      } //ab watchHistory me pura video object aa jyega jo user ne dekha he
+    }
+  ])
+
+  return res.status(200).json(new Apiresponse(200,user[0].watchHistory,"user watch history fetched successfully"))
+})
 
 
-export {registerUser,loginUser,logoutUser,refreshAccessToken, changePassword, getCurrentUser, updateUserProfile,getUserChannelProfile}
+export {registerUser,loginUser,logoutUser,refreshAccessToken, changePassword, getCurrentUser, updateUserProfile,getUserChannelProfile, getWatchHistory}

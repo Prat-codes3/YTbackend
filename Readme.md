@@ -57,3 +57,10 @@ jwt helps in tokens
      made user.controllers.js 
      made  route.routers.js
      then used this in app using app.use(" ",userRouter)
+
+     # other user routes, also verifyjwt  in authentication middleware
+     # mongodb aggregate pipelines 
+        to show channel profile ,subscrbers count , is the user subscribed to that channel
+
+     # added a watchHIstory controller  
+     using nested pipelines 
